@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { LoginSchema } from "@/app/schemas/auth.schema";
 import { treeifyError } from "zod/v4/core";
 import { serverApiFetch, buildApiResponse } from "@/lib/server/apiClient";
+import { getDeviceId } from "@/lib/device/getDeviceId";
 
 export async function POST(req: Request) {
   try {
@@ -19,9 +20,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const result = await serverApiFetch("/auth/login", {
+    const result = await serverApiFetch(req, "/auth/login", {
       method: "POST",
       body: JSON.stringify(parsed.data),
+      headers: {
+        "Content-Type": "application/json",
+        "X-DEVICE-ID": getDeviceId(),
+      }
     });
 
     return buildApiResponse(result);

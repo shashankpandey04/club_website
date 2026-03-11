@@ -8,16 +8,20 @@ if (!API_URL) throw new Error("API_BASE_URL missing");
 if (!API_KEY) throw new Error("TRUSTED_CLIENT_API_KEY missing");
 
 export async function serverApiFetch(
+  req: Request,
   path: string,
   options: RequestInit = {}
 ) {
   const requestId = crypto.randomUUID();
+  const deviceId = req.headers.get("x-device-id") || "";
+
   const backendResponse = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
       "X-API-KEY": API_KEY,
       "X-REQUEST-ID": requestId,
+      "X-DEVICE-ID": deviceId,
       ...(options.headers || {}),
     },
     credentials: "include",
@@ -27,9 +31,7 @@ export async function serverApiFetch(
   let data: any = {};
   try {
     data = await backendResponse.json();
-  } catch {
-    data = {};
-  }
+  } catch {}
 
   return {
     ok: backendResponse.ok,
