@@ -1,44 +1,70 @@
-import { NextResponse } from "next/server";
-import { RegisterSchema } from "@/app/schemas/auth.schema";
-import { treeifyError } from "zod/v4/core";
-import { serverApiFetch, buildApiResponse } from "@/lib/server/apiClient";
-import { getDeviceId } from "@/lib/device/getDeviceId";
+export const runtime = 'nodejs'
+
+import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+import { signUpSchema } from '@/app/schemas/auth.schema'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const parsed = RegisterSchema.safeParse(body);
+    const body = await req.json()
+
+    const parsed = signUpSchema.safeParse(body)
 
     if (!parsed.success) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid registration data",
-          errors: treeifyError(parsed.error),
+          message: 'Invalid registration data',
+          errors: parsed.error.flatten().fieldErrors,
         },
-        { status: 400 }
-      );
+        { status: 422 }
+      )
     }
 
-    const result = await serverApiFetch(req, "/auth/register", {
-      method: "POST",
-      body: JSON.stringify(parsed.data),
-      headers: {
-        "Content-Type": "application/json",
-        "X-DEVICE-ID": getDeviceId(),
-      }
-    });
+    const { email, password, full_name } = parsed.data
 
-    return buildApiResponse(result);
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
 
-  } catch (error) {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        ...(siteUrl
+          ? { emailRedirectTo: `${siteUrl}/auth/login/callback` }
+          : {}),
+        data: {
+          full_name,
+        },
+      },
+    })
+
+    if (error) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: error.message || 'Unable to create account',
+        },
+        { status: 400 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'User registered successfully',
+      user: data.user,
+    }, { status: 201 })
+  } catch (err) {
     return NextResponse.json(
       {
         success: false,
-        message: "An error occurred during registration",
-        error: error instanceof Error ? error.message : String(error),
+        message: err instanceof Error ? err.message : 'Internal server error',
       },
       { status: 500 }
-    );
+    )
   }
 }

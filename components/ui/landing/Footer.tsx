@@ -57,7 +57,7 @@ export default function Footer() {
                 <a href="/#about" className="text-blue-200/70 hover:text-cyan-300 transition-colors">▸ About Club</a>
               </li>
               <li>
-                <a href="/register" className="text-blue-200/70 hover:text-cyan-300 transition-colors">▸ Join</a>
+                <a href="/auth/register" className="text-blue-200/70 hover:text-cyan-300 transition-colors">▸ Join</a>
               </li>
               <li>
                 <a href="/events" className="text-blue-200/70 hover:text-cyan-300 transition-colors">▸ Events</a>
