@@ -1,47 +1,64 @@
-import { NextResponse } from "next/server";
-import { LoginSchema } from "@/app/schemas/auth.schema";
-import { treeifyError } from "zod/v4/core";
-import { serverApiFetch, buildApiResponse } from "@/lib/server/apiClient";
-import { getDeviceId } from "@/lib/device/getDeviceId";
+export const runtime = 'nodejs'
+
+import { NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+import { loginSchema } from '@/app/schemas/auth.schema'
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const parsed = LoginSchema.safeParse(body);
+    const body = await req.json()
+
+    const parsed = loginSchema.safeParse(body)
 
     if (!parsed.success) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Invalid login data",
-          errors: treeifyError(parsed.error),
-        },
+        { error: parsed.error.flatten() },
         { status: 400 }
-      );
+      )
     }
 
-    const result = await serverApiFetch(req, "/auth/login", {
-      method: "POST",
-      body: JSON.stringify(parsed.data),
-      headers: {
-        "Content-Type": "application/json",
-        "X-DEVICE-ID": getDeviceId(),
-      }
-    });
+    const { email, password } = parsed.data
 
-    return buildApiResponse(result);
+    const cookieStore = await cookies()
 
-  } catch (error) {
-    return NextResponse.json(
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
-        success: false,
-        message: "An error occurred during login",
-        error:
-          error instanceof Error
-            ? error.message
-            : String(error),
-      },
+        cookies: {
+          get: (name) => cookieStore.get(name)?.value,
+          set: (name, value, options) => {
+            cookieStore.set({ name, value, ...options })
+          },
+          remove: (name, options) => {
+            cookieStore.set({ name, value: '', ...options })
+          },
+        },
+      }
+    )
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 400 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Login successful',
+      user: data.user,
+    })
+  } catch (err) {
+    return NextResponse.json(
+      { error: 'Internal server error' },
       { status: 500 }
-    );
+    )
   }
 }

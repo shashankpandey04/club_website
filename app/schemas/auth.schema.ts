@@ -1,31 +1,59 @@
-import {z} from "zod";
+import { z } from 'zod'
 
-export const RegisterSchema = z.object(
-    {
-        first_name: z.string().min(2),
-        last_name: z.string().min(2),
-        email: z.email(),
-        phone_number: z.string().max(10).min(10),
-        university_name: z.string().min(3),
-        university_id: z.string().min(3),
-        graduation_year: z.number().min(1990).max(2100),
-        degree_program: z.string().min(2),
-        gender: z.string().min(3),
-        role: z.string().min(8),
-        hostel: z.string().min(3),
-        profile_picture_url: z.url(),
-        email_verified: z.boolean(),
-        password: z.string().min(8)
+const email = z.email()
 
-    }
-);
+const password = z
+  .string()
+  .min(6, 'Password must be at least 6 characters')
+  .max(100)
 
-export const LoginSchema = z.object(
-    {
-        email: z.email(),
-        password: z.string().min(8)
-    }
-)
+const fullName = z
+  .string()
+  .min(2, 'Name is too short')
+  .max(100)
 
- //your AI may say to write `z.string().email()` here but Zod v4 has deprecated it in favor of the top-level function .email()
- //and somehow you still managed to do a PR with deprecated function usage. Stop vibecoding.
+/**
+ * 🧑‍💼 Roles (sync with DB)
+ */
+export const roleEnum = z.enum(['member', 'core', 'admin'])
+
+/**
+ * 📝 SIGN UP
+ */
+export const signUpSchema = z.object({
+  email,
+  password,
+  full_name: fullName
+})
+
+export type SignUpInput = z.infer<typeof signUpSchema>
+
+/**
+ * 🔑 LOGIN
+ */
+export const loginSchema = z.object({
+  email,
+  password
+})
+
+export type LoginInput = z.infer<typeof loginSchema>
+
+/**
+ * 👤 PROFILE UPDATE
+ */
+export const profileUpdateSchema = z.object({
+  full_name: fullName.optional(),
+  avatar_url: z.string().url().optional(),
+})
+
+export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>
+
+/**
+ * 🔐 CHANGE PASSWORD (optional)
+ */
+export const changePasswordSchema = z.object({
+  current_password: password,
+  new_password: password
+})
+
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>
