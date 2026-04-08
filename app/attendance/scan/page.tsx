@@ -38,6 +38,7 @@ function parseUserId(decodedText: string): string | null {
 export default function AttendancePage() {
   const [status, setStatus] = useState<AttendanceStatus>('checkin')
   const [isScannerReady, setIsScannerReady] = useState(false)
+  const [isCoolingDown, setIsCoolingDown] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [lastScannedUserId, setLastScannedUserId] = useState<string | null>(null)
   const [feedback, setFeedback] = useState<Feedback>({
@@ -49,6 +50,7 @@ export default function AttendancePage() {
   const statusRef = useRef<AttendanceStatus>('checkin')
   const isProcessingRef = useRef(false)
   const lastDecodedRef = useRef<{ value: string; at: number } | null>(null)
+  const restartTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     statusRef.current = status
@@ -61,85 +63,132 @@ export default function AttendancePage() {
       const scanner = new Html5Qrcode('reader')
       scannerRef.current = scanner
 
-      try {
-        await scanner.start(
-          { facingMode: 'environment' },
-          { fps: 10, qrbox: 260 },
-          async (decodedText) => {
-            const now = Date.now()
+      const stopScannerIfActive = async () => {
+        const state = (scanner as { getState?: () => number }).getState?.()
+        const isRunningOrPaused = state === 2 || state === 3
 
-            if (
-              lastDecodedRef.current &&
-              lastDecodedRef.current.value === decodedText &&
-              now - lastDecodedRef.current.at < 2000
-            ) {
-              return
-            }
-
-            if (isProcessingRef.current) {
-              return
-            }
-
-            const userId = parseUserId(decodedText)
-
-            if (!userId) {
-              setFeedback({ type: 'error', text: 'Invalid QR payload. Try another code.' })
-              return
-            }
-
-            lastDecodedRef.current = { value: decodedText, at: now }
-            isProcessingRef.current = true
-            setIsSubmitting(true)
-            setFeedback({ type: 'info', text: 'Submitting attendance...' })
-
-            try {
-              const response = await fetch('/api/attendance/scan', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  user_id: userId,
-                  status: statusRef.current,
-                }),
-              })
-
-              const result = await response.json().catch(() => ({}))
-
-              if (!response.ok) {
-                setFeedback({
-                  type: 'error',
-                  text: result.error || 'Unable to mark attendance',
-                })
-              } else {
-                setLastScannedUserId(userId)
-                setFeedback({
-                  type: 'success',
-                  text: `${statusRef.current} marked successfully`,
-                })
-              }
-            } catch {
-              setFeedback({ type: 'error', text: 'Network error while marking attendance' })
-            } finally {
-              isProcessingRef.current = false
-              if (mountedRef.current) {
-                setIsSubmitting(false)
-              }
-            }
-          },
-          () => {}
-        )
-
-        if (mountedRef.current) {
-          setIsScannerReady(true)
-          setFeedback({ type: 'info', text: 'Scanner ready. Align QR inside the frame.' })
+        if (!isRunningOrPaused) {
+          return
         }
-      } catch {
-        if (mountedRef.current) {
-          setFeedback({
-            type: 'error',
-            text: 'Unable to start camera. Check permissions and try refreshing the page.',
-          })
+
+        const stopResult = scanner.stop()
+        if (stopResult && typeof stopResult.then === 'function') {
+          await stopResult.catch(() => {})
         }
       }
+
+      const startScanner = async () => {
+        const state = (scanner as { getState?: () => number }).getState?.()
+        const isRunningOrPaused = state === 2 || state === 3
+
+        if (isRunningOrPaused || !mountedRef.current) {
+          return
+        }
+
+        try {
+          await scanner.start(
+            { facingMode: 'environment' },
+            { fps: 10, qrbox: 260 },
+            async (decodedText) => {
+              const now = Date.now()
+
+              if (
+                lastDecodedRef.current &&
+                lastDecodedRef.current.value === decodedText &&
+                now - lastDecodedRef.current.at < 2000
+              ) {
+                return
+              }
+
+              if (isProcessingRef.current) {
+                return
+              }
+
+              const userId = parseUserId(decodedText)
+
+              if (!userId) {
+                setFeedback({ type: 'error', text: 'Invalid QR payload. Try another code.' })
+                return
+              }
+
+              lastDecodedRef.current = { value: decodedText, at: now }
+              isProcessingRef.current = true
+              setIsSubmitting(true)
+              setFeedback({ type: 'info', text: 'Submitting attendance...' })
+
+              try {
+                const response = await fetch('/api/attendance/scan', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    user_id: userId,
+                    status: statusRef.current,
+                  }),
+                })
+
+                const result = await response.json().catch(() => ({}))
+
+                if (!response.ok) {
+                  setFeedback({
+                    type: 'error',
+                    text: result.error || 'Unable to mark attendance',
+                  })
+                } else {
+                  setLastScannedUserId(userId)
+                  setFeedback({
+                    type: 'success',
+                    text: `${statusRef.current} marked successfully. Restarting camera...`,
+                  })
+
+                  await stopScannerIfActive()
+
+                  if (mountedRef.current) {
+                    setIsScannerReady(false)
+                    setIsCoolingDown(true)
+                  }
+
+                  if (restartTimerRef.current) {
+                    clearTimeout(restartTimerRef.current)
+                  }
+
+                  restartTimerRef.current = setTimeout(async () => {
+                    if (!mountedRef.current) {
+                      return
+                    }
+
+                    await startScanner()
+                    if (mountedRef.current) {
+                      setIsCoolingDown(false)
+                    }
+                  }, 2000)
+                }
+              } catch {
+                setFeedback({ type: 'error', text: 'Network error while marking attendance' })
+              } finally {
+                isProcessingRef.current = false
+                if (mountedRef.current) {
+                  setIsSubmitting(false)
+                }
+              }
+            },
+            () => {}
+          )
+
+          if (mountedRef.current) {
+            setIsScannerReady(true)
+            setFeedback({ type: 'info', text: 'Scanner ready. Align QR inside the frame.' })
+          }
+        } catch {
+          if (mountedRef.current) {
+            setFeedback({
+              type: 'error',
+              text: 'Unable to start camera. Check permissions and try refreshing the page.',
+            })
+          }
+        }
+      }
+
+      await startScanner()
     }
 
     initScanner()
@@ -149,6 +198,10 @@ export default function AttendancePage() {
 
       const scanner = scannerRef.current
       scannerRef.current = null
+
+      if (restartTimerRef.current) {
+        clearTimeout(restartTimerRef.current)
+      }
 
       if (scanner) {
         const safeClear = () => {
@@ -239,7 +292,7 @@ export default function AttendancePage() {
                 Active status: <span className="font-semibold capitalize text-cyan-200">{status}</span>
               </div>
               <div className="rounded-xl border border-cyan-400/15 bg-blue-950/50 px-4 py-3 text-blue-100/80">
-                Scanner: <span className="font-semibold text-cyan-200">{isScannerReady ? 'Ready' : 'Starting...'}</span>
+                Scanner: <span className="font-semibold text-cyan-200">{isCoolingDown ? 'Paused (success confirmation)' : isScannerReady ? 'Ready' : 'Starting...'}</span>
               </div>
               {lastScannedUserId && (
                 <div className="rounded-xl border border-cyan-400/15 bg-blue-950/50 px-4 py-3 text-blue-100/80 break-all">
