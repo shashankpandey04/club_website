@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthShell } from '@/components/auth/AuthShell'
+import { supabaseBrowser } from '@/lib/supabase/client'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -11,6 +12,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
@@ -57,6 +59,25 @@ export default function SignupPage() {
       setError('Network error')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleGoogleSignUp = async () => {
+    setGoogleLoading(true)
+    setError(null)
+
+    const redirectTo = `${window.location.origin}/auth/login/callback`
+
+    const { error } = await supabaseBrowser.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo,
+      },
+    })
+
+    if (error) {
+      setError(error.message || 'Unable to continue with Google')
+      setGoogleLoading(false)
     }
   }
 
@@ -113,10 +134,26 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={loading}
-          className="group inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 to-sky-300 px-4 py-3 font-semibold text-[#08192F] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+          className="group inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-cyan-400 to-sky-300 px-4 py-3 font-semibold text-[#08192F] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? 'Creating account...' : 'Create account'}
           {!loading && <span className="transition-transform group-hover:translate-x-0.5">→</span>}
+        </button>
+
+        <div className="relative py-1">
+          <div className="h-px bg-cyan-400/20" />
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#08192F] px-3 text-xs uppercase tracking-[0.2em] text-blue-100/60">
+            or
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogleSignUp}
+          disabled={googleLoading}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-cyan-400/25 bg-blue-950/55 px-4 py-3 font-semibold text-cyan-100 transition hover:border-cyan-300 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {googleLoading ? 'Redirecting...' : 'Continue with Google'}
         </button>
       </form>
     </AuthShell>

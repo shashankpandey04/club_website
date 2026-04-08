@@ -13,15 +13,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install deps
+      - name: Install dependencies
         run: npm install
 
-      - name: Build & Deploy
-        run: npx opennext build && npx opennext deploy
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Build for Cloudflare
+        run: npx @opennextjs/cloudflare build
+
+      - name: Deploy to Cloudflare
+        run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
