@@ -124,7 +124,8 @@ export default function AttendancePage() {
                 setIsSubmitting(false)
               }
             }
-          }
+          },
+          () => {}
         )
 
         if (mountedRef.current) {

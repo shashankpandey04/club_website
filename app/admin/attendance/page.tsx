@@ -61,7 +61,7 @@ export default async function AdminAttendanceAnalyticsPage() {
     .select('id, title, event_date')
     .order('event_date', { ascending: true })
 
-  const rows = (data ?? []) as AttendanceRow[]
+  const rows = (data ?? []) as unknown as AttendanceRow[]
 
   const totals = {
     scans: rows.length,
