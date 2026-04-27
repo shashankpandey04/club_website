@@ -94,6 +94,7 @@ export async function GET(req: Request, { params }: RouteContext) {
       eventTitle: event.title,
       eventDate: event.event_date,
       certificateUid: certificate.certificate_uid,
+      baseUrl: `${url.protocol}//${url.host}`,
     })
 
     const { error: uploadError } = await supabaseAdmin.storage

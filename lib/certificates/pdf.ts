@@ -1,5 +1,4 @@
-import path from 'path'
-import { readFile } from 'fs/promises'
+
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import { toReadableDate } from '@/lib/certificates/core'
 
@@ -8,15 +7,8 @@ type CertificatePdfPayload = {
   eventTitle: string
   eventDate: string
   certificateUid: string
+  baseUrl: string
 }
-
-const CERTIFICATE_BACKGROUND_PATH = path.join(
-  process.cwd(),
-  'public',
-  'image',
-  'certificate',
-  'workshop.png'
-)
 
 const PAGE_WIDTH = 841.89
 const PAGE_HEIGHT = 595.28
@@ -33,7 +25,7 @@ function escapeHtml(value: string): string {
     .replace(/'/g, '&#039;')
 }
 
-async function getCertificateBackgroundBytes() {
+async function getCertificateBackgroundBytes(baseUrl: string) {
   if (cachedBackgroundBytes) {
     return cachedBackgroundBytes
   }
@@ -43,7 +35,12 @@ async function getCertificateBackgroundBytes() {
   }
 
   backgroundBytesPromise = (async () => {
-    const imageBuffer = await readFile(CERTIFICATE_BACKGROUND_PATH)
+    const url = new URL('/image/certificate/workshop.png', baseUrl).toString()
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch background image: ${response.status}`)
+    }
+    const imageBuffer = await response.arrayBuffer()
     const bytes = new Uint8Array(imageBuffer)
     cachedBackgroundBytes = bytes
     backgroundBytesPromise = null
@@ -95,7 +92,7 @@ export async function generateCertificatePdf(payload: CertificatePdfPayload): Pr
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://awslpu.in/verify/${payload.certificateUid}`)}`
 
   const [backgroundBytes, qrCodeResponse] = await Promise.all([
-    getCertificateBackgroundBytes(),
+    getCertificateBackgroundBytes(payload.baseUrl),
     fetch(qrCodeUrl),
   ])
 
