@@ -99,7 +99,7 @@ horizon_frontend/
 
 ## License
 
-© Horizon. All rights reserved. Powered by AWS Cloud Club LPU.
+© Horizon. All rights reserved. Powered by AWS Student Builder Group.
 
 ---
 

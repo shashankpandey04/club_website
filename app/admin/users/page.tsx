@@ -88,7 +88,7 @@ export default async function AdminUsersPage() {
         <div className="overflow-hidden rounded-3xl border border-cyan-400/20 bg-[#08192F]/85 shadow-[0_24px_80px_rgba(2,10,24,0.5)] backdrop-blur-xl">
           <div className="flex items-center gap-3 border-b border-cyan-400/15 px-6 py-4">
             <Users className="text-cyan-300" size={18} />
-            <p className="text-sm font-mono uppercase tracking-[0.24em] text-cyan-300/80">Club users</p>
+            <p className="text-sm font-mono uppercase tracking-[0.24em] text-cyan-300/80">Group users</p>
           </div>
 
           <UserRoleTable users={mergedUsers} currentUserId={user.id} />

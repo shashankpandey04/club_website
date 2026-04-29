@@ -17,9 +17,9 @@ export default function Footer() {
         <div className="grid md:grid-cols-12 gap-8 mb-12 border-b-2 border-cyan-400/20 pb-12">
           <div className="md:col-span-5">
             <div className="flex items-center gap-3 mb-6">
-              <img src="/image/logo/awslpu.png" alt="AWS Cloud Club" className="h-12" />
+              <img src="/image/logo/aws_student_builder_group.png" alt="AWS Student Builder Group" className="h-12" />
               <div className="border-l-2 border-cyan-400/40 pl-3">
-                <h3 className="text-lg font-bold text-cyan-300 uppercase tracking-wider">AWS Cloud Club</h3>
+                <h3 className="text-lg font-bold text-cyan-300 uppercase tracking-wider">AWS Student Builder Group</h3>
               </div>
             </div>
             <p className="text-blue-200/70 text-sm leading-relaxed mb-6 max-w-md font-mono">
@@ -86,7 +86,7 @@ export default function Footer() {
         
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs">
           <p className="text-blue-300/60 text-center md:text-left">
-            © 2026 AWS Cloud Club LPU | Building the next generation of cloud innovators | Powered by <span className="text-cyan-300">AWS</span>
+            © 2026 AWS Student Builder Group LPU | Building the next generation of cloud innovators | Powered by <span className="text-cyan-300">AWS</span>
           </p>
           <div className="flex gap-6">
             <a href="/privacy" rel="noopener noreferrer" className="text-blue-300/60 hover:text-cyan-300 transition-colors">Privacy Policy</a>

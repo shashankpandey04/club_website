@@ -58,7 +58,7 @@ export default function WhatWeOffer() {
             <span className="text-cyan-300">▸</span> What We <span className="text-cyan-400">OFFER</span>
           </h2>
           <p className="text-blue-100 text-base max-w-3xl mx-auto leading-relaxed font-mono">
-            AWS Cloud Club LPU provides comprehensive learning, hands-on experience, industry connections, and career opportunities for students passionate about cloud computing.
+            AWS Student Builder Group LPU provides comprehensive learning, hands-on experience, industry connections, and career opportunities for students passionate about cloud computing.
           </p>
         </div>
 

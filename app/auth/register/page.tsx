@@ -83,9 +83,9 @@ export default function SignupPage() {
 
   return (
     <AuthShell
-      eyebrow="Join the club"
+      eyebrow="Join the AWS Student Builder Group"
       title="Create your account"
-      description="Register once to unlock event signups, community updates, and the member-only AWS Cloud Club experience."
+      description="Register once to unlock event signups, community updates, and the member-only AWS Student Builder Group experience."
       footerText="Already registered?"
       footerHref="/auth/login"
       footerLinkLabel="Sign in"

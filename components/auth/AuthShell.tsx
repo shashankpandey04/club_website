@@ -54,9 +54,9 @@ export function AuthShell({
 
           <div className="mt-6 max-w-2xl">
             <div className="flex items-center gap-3">
-              <img src="/image/logo/awslpu.png" alt="AWS Cloud Club" className="h-14 w-14 rounded-full border border-cyan-400/35 bg-blue-950/50 p-2 shadow-[0_0_24px_rgba(0,229,255,0.12)]" />
+              <img src="/image/logo/aws_student_builder_group.png" alt="AWS Student Builder Group" className="h-14 w-14 rounded-full border border-cyan-400/35 bg-blue-950/50 p-2 shadow-[0_0_24px_rgba(0,229,255,0.12)]" />
               <div>
-                <p className="font-mono text-xs uppercase tracking-[0.3em] text-cyan-300/85">AWS Cloud Club LPU</p>
+                <p className="font-mono text-xs uppercase tracking-[0.3em] text-cyan-300/85">AWS Student Builder Group LPU</p>
                 <h1 className="mt-1 text-4xl font-bold text-white sm:text-5xl">{title}</h1>
               </div>
             </div>

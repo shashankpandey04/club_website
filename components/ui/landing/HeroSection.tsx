@@ -23,10 +23,10 @@ export default function HeroSection() {
 
       <div className="relative z-20 flex flex-col items-center text-center px-4 py-20 max-w-5xl mx-auto">
         
-        <h1 className="text-6xl md:text-8xl font-bold text-white drop-shadow-lg tracking-tight mb-6 animate-fade-in-up" style={{animationDelay: '0.1s'}}>
-          <span className="text-cyan-300">AWS Cloud Club</span>
+        <h1 className="text-6xl md:text-6xl font-bold text-white drop-shadow-lg tracking-tight mb-6 animate-fade-in-up" style={{animationDelay: '0.1s'}}>
+          <span className="text-cyan-300">AWS Student Builder Group</span>
           <br />
-          <span className="text-4xl md:text-6xl text-blue-200">LPU</span>
+          <span className="text-4xl md:text-4xl text-blue-200">LPU</span>
         </h1>
         
         <div className="text-2xl md:text-3xl text-blue-100 font-semibold mb-6 animate-fade-in-up font-mono border-b-2 border-cyan-400 pb-3" style={{animationDelay: '0.2s'}}>
