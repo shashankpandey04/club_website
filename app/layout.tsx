@@ -4,15 +4,15 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "AWS Cloud Club LPU | Learn Cloud Computing & AWS at Lovely Professional University",
-    template: "%s | AWS Cloud Club LPU",
+    default: "AWS Student Builder Group LPU | Learn Cloud Computing & AWS at Lovely Professional University",
+    template: "%s | AWS Student Builder Group LPU",
   },
 
   description:
-    "AWS Cloud Club at Lovely Professional University (LPU) is a student-led technical community focused on cloud computing, AWS certifications, hands-on labs, hackathons, and industry-ready skills.",
+    "AWS Student Builder Group at Lovely Professional University (LPU) is a student-led technical community focused on cloud computing, AWS certifications, hands-on labs, hackathons, and industry-ready skills.",
 
   keywords: [
-    "AWS Cloud Club LPU",
+    "AWS Student Builder Group LPU",
     "AWS Student Club India",
     "Cloud Computing LPU",
     "AWS Workshops LPU",
@@ -23,24 +23,24 @@ export const metadata: Metadata = {
     "AWS Learning Community",
   ],
 
-  authors: [{ name: "AWS Cloud Club LPU" }],
-  creator: "AWS Cloud Club LPU",
-  publisher: "AWS Cloud Club LPU",
+  authors: [{ name: "AWS Student Builder Group LPU" }],
+  creator: "AWS Student Builder Group LPU",
+  publisher: "AWS Student Builder Group LPU",
 
   metadataBase: new URL("https://awslpu.in"),
 
   openGraph: {
-    title: "AWS Cloud Club LPU",
+    title: "AWS Student Builder Group LPU",
     description:
-      "Join AWS Cloud Club LPU to learn cloud computing, build real-world projects, attend workshops, and grow with a community of cloud engineers.",
+      "Join AWS Student Builder Group LPU to learn cloud computing, build real-world projects, attend workshops, and grow with a community of cloud engineers.",
     url: "https://awslpu.in",
-    siteName: "AWS Cloud Club LPU",
+    siteName: "AWS Student Builder Group LPU",
     images: [
       {
         url: "/og-image.png", // add later
         width: 1200,
         height: 630,
-        alt: "AWS Cloud Club LPU",
+        alt: "AWS Student Builder Group LPU",
       },
     ],
     locale: "en_IN",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "AWS Cloud Club LPU",
+    title: "AWS Student Builder Group LPU",
     description:
       "Student-led AWS cloud computing community at Lovely Professional University.",
     images: ["/og-image.png"],

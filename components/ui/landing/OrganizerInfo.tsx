@@ -5,7 +5,7 @@ return (
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            <span className="text-cyan-400">▸</span> AWS Cloud Club <span className="text-cyan-300">LPU</span>
+            <span className="text-cyan-400">▸</span> AWS Student Builder Group <span className="text-cyan-300">LPU</span>
           </h2>
         </div>
 
@@ -13,11 +13,11 @@ return (
           <div className="absolute top-0 left-0 right-0 h-1 bg-cyan-400/30"></div>
           <div className="grid md:grid-cols-2 gap-8 p-8 md:p-12 items-center">
             <div className="text-center md:text-left">
-              <img src="/image/logo/awslpu.png" alt="AWS Cloud Club LPU" className="h-16 mb-6 mx-auto md:mx-0" />
+              <img src="/image/logo/aws_student_builder_group.png" alt="AWS Student Builder Group LPU" className="h-16 mb-6 mx-auto md:mx-0" />
               <h3 className="text-3xl font-bold text-cyan-300 mb-2 uppercase tracking-wider">Empowering Cloud Innovators</h3>
               <p className="text-base text-blue-300 mb-4 font-mono uppercase tracking-widest">[GROUND_STATION] Lovely Professional University</p>
               <p className="text-blue-100/70 leading-relaxed mb-6 text-sm font-mono">
-                AWS Cloud Club at LPU is a vibrant student-driven community dedicated to demystifying cloud computing and empowering the next generation of cloud architects, developers, and innovators. We provide industry-standard training, hands-on projects, and career acceleration opportunities to students across all skill levels.
+                AWS Student Builder Group at LPU is a vibrant student-driven community dedicated to demystifying cloud computing and empowering the next generation of cloud architects, developers, and innovators. We provide industry-standard training, hands-on projects, and career acceleration opportunities to students across all skill levels.
               </p>
             </div>
 

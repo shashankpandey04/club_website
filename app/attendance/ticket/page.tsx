@@ -116,7 +116,7 @@ export default async function TicketPage({ searchParams }: TicketPageProps) {
         <div id="ticket-print-root" className="overflow-hidden rounded-[2rem] border border-cyan-300/25 bg-[#08192F]/90 shadow-[0_24px_80px_rgba(2,10,24,0.55)] backdrop-blur-xl print:rounded-none print:border-slate-300 print:bg-white print:text-slate-900 print:shadow-none">
           <div className="grid gap-6 p-6 print:p-6 sm:grid-cols-[1fr_auto] sm:p-8">
             <div>
-              <p className="text-xs font-mono uppercase tracking-[0.3em] text-cyan-300/80 print:text-slate-500">AWS Cloud Club LPU</p>
+              <p className="text-xs font-mono uppercase tracking-[0.3em] text-cyan-300/80 print:text-slate-500">AWS Student Builder Group LPU</p>
               <h1 className="mt-3 text-3xl font-bold text-white print:text-slate-900">{event.title}</h1>
               <div className="mt-4 space-y-2 text-sm text-blue-100/80 print:text-slate-700">
                 <p className="inline-flex items-center gap-2">

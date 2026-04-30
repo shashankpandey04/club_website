@@ -54,10 +54,10 @@ export function NavigationBar() {
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group relative">
             <div className="relative">
-              <img src="/image/logo/awslpu.png" alt="AWS Cloud Club" className="h-12 relative z-10 group-hover:scale-105 transition-transform" />
+              <img src="/image/logo/aws_student_builder_group.png" alt="AWS Student Builder Group" className="h-12 relative z-10 group-hover:scale-105 transition-transform" />
             </div>
             <div className="hidden md:block border-l-2 border-cyan-400/40 pl-3">
-              <div className="text-white font-bold text-base tracking-wider uppercase">AWS Cloud Club</div>
+              <div className="text-white font-bold text-base tracking-wider uppercase">AWS Student Builder Group</div>
             </div>
           </Link>
           <div className="flex items-center gap-6">

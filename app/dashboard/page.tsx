@@ -21,7 +21,7 @@ export default async function DashboardPage() {
     .single()
 
   const email = user.email ?? 'No email found'
-  const displayName = profile?.full_name || user.user_metadata?.full_name || 'AWS Cloud Club Member'
+  const displayName = profile?.full_name || user.user_metadata?.full_name || 'AWS Student Builder Group Member'
   const role = profile?.role || 'member'
   const workspaceUid = (profile?.workspace_uid ?? '').trim()
   const workspaceName = (profile?.workspace_name ?? '').trim()

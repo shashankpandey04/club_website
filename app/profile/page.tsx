@@ -278,7 +278,7 @@ export default function ProfilePage() {
           </div>
 
           <p className="text-center text-xs text-blue-300/60">
-            Your information is securely stored and only visible to authorized club administrators.
+            Your information is securely stored and only visible to authorized group administrators.
           </p>
         </div>
       </div>
